@@ -16,32 +16,30 @@
 </html>
 
 <script lang="js">
-	if (navigator.getBattery) {
-		navigator.getBattery().then(battery => {
-			const updateChargeInfo = () => {
-				if(battery.charging) {
-						document.getElementById('batteryIsCharging').textContent = 'But your battery is charging';
-					} else {
-						document.getElementById('batteryIsCharging').textContent = 'And your battery is not charging, so it will disappear soon';
-					}
-					console.log(`your battery level is ${battery.level * 100}% and it's ${battery.charging ? 'charging' : 'not charging'}`);
-					document.body.style.opacity = battery.level;
-			};
-			
-			battery.addEventListener('levelchange', () => {
-				updateChargeInfo();
+	document.addEventListener('DOMContentLoaded', () => {
+		if (navigator.getBattery) {
+			navigator.getBattery().then(battery => {
+				const updateChargeInfo = () => {
+					if(battery.charging) {
+							document.getElementById('batteryIsCharging').textContent = 'But your battery is charging';
+						} else {
+							document.getElementById('batteryIsCharging').textContent = 'And your battery is not charging, so it will disappear as your battery level drops';
+						}
+						console.log(`your battery level is ${battery.level * 100}% and it's ${battery.charging ? 'charging' : 'not charging'}`);
+						document.body.style.opacity = battery.level;
+				};
+				
+				battery.addEventListener('levelchange', () => {
+					updateChargeInfo();
+				});
+				battery.addEventListener("chargingchange", () => {
+					updateChargeInfo();
+				});
+					updateChargeInfo();
 			});
-			battery.addEventListener("chargingchange", () => {
-				updateChargeInfo();
-			});
-			document.addEventListener('DOMContentLoaded', () => {
-				updateChargeInfo();
-			});
-		});
-	} else {
-		document.addEventListener('DOMContentLoaded', () => {
+		} else {
 			console.log('Battery status not supported');
 			document.getElementById('batteryData').textContent = 'Sadly, your browser does not support battery status';
-		});
-	}
+		}
+	});
 </script>

@@ -1,16 +1,47 @@
----
-
----
-
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>This website disappears</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="flex flex-col justify-center text-center items-center h-[100vh] bg-black text-white">
+		<h1 class="text-3xl font-bold">This website disappears</h1>
+		<div id="batteryData">
+			<p id="batteryIsCharging"></p>
+			<p id="batteryLevel"></p>
+		</div>
 	</body>
 </html>
+
+<script lang="js">
+	if (navigator.getBattery) {
+		navigator.getBattery().then(battery => {
+			const updateChargeInfo = () => {
+				if(battery.charging) {
+						document.getElementById('batteryIsCharging').textContent = 'But your battery is charging';
+					} else {
+						document.getElementById('batteryIsCharging').textContent = 'And your battery is not charging, so it will disappear soon';
+					}
+					console.log(`your battery level is ${battery.level * 100}% and it's ${battery.charging ? 'charging' : 'not charging'}`);
+					document.body.style.opacity = battery.level;
+			};
+			
+			battery.addEventListener('levelchange', () => {
+				updateChargeInfo();
+			});
+			battery.addEventListener("chargingchange", () => {
+				updateChargeInfo();
+			});
+			document.addEventListener('DOMContentLoaded', () => {
+				updateChargeInfo();
+			});
+		});
+	} else {
+		document.addEventListener('DOMContentLoaded', () => {
+			console.log('Battery status not supported');
+			document.getElementById('batteryData').textContent = 'Sadly, your browser does not support battery status';
+		});
+	}
+</script>
